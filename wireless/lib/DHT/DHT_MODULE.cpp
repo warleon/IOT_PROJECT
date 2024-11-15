@@ -37,7 +37,7 @@ void DHT_MODULE::setup()
     time = Time();
 }
 
-void DHT_MODULE::loop()
+void DHT_MODULE::tick()
 {
     time.tick();
     if(time.acc < delayMS)return;

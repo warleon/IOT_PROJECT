@@ -23,9 +23,10 @@ public:
         float upper;
     }range_t;
 
+    //pin,humidity range,temperature range
     DHT_MODULE(int,range_t,range_t);
     void setup();
-    void loop();
+    void tick();
     ~DHT_MODULE();
 
     callback_t on[6] = {};
