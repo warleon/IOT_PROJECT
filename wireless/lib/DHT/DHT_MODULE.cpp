@@ -53,8 +53,9 @@ void DHT_MODULE::tick()
         if(humidity < humidity_range.lower){
             if(on[HUMIDITY_TOO_LOW])on[HUMIDITY_TOO_LOW](humidity,temperature);
         }
-        else if(humidity > humidity_range.upper){}
+        else if(humidity > humidity_range.upper){
             if(on[HUMIDITY_TOO_HIGH])on[HUMIDITY_TOO_HIGH](humidity,temperature);
+        }
         else{
             if(on[HUMIDITY_IN_RANGE])on[HUMIDITY_IN_RANGE](humidity,temperature);
         }
