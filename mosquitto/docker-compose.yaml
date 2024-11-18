@@ -1,0 +1,20 @@
+version: "3"
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883" # MQTT port
+      - "9001:9001" # WebSocket port (optional)
+    volumes:
+      - ./mosquitto_config:/mosquitto/config # Mount configuration from host
+    networks:
+      - mqtt_network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "1883"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  mqtt_network:
+    driver: bridge
