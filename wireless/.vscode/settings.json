@@ -1,6 +1,15 @@
 {
   "files.associations": {
     "*.ejs": "html",
-    "variant": "cpp"
+    "variant": "cpp",
+    "atomic": "cpp",
+    "cmath": "cpp",
+    "*.tcc": "cpp",
+    "numeric": "cpp",
+    "cinttypes": "cpp",
+    "cstdlib": "cpp",
+    "deque": "cpp",
+    "string": "cpp",
+    "vector": "cpp"
   }
 }

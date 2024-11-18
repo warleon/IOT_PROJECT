@@ -1,3 +1,4 @@
+#pragma once
 class RELAY_MODULE
 {
 public:
