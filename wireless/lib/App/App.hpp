@@ -9,6 +9,7 @@
 
 class App
 {
+    static App *instance;
 public:
     typedef struct {
         String SSID;
@@ -30,7 +31,13 @@ public:
     void tick();
     ~App();
 private:
-    static App *instance;
+
+    struct {
+        String humidity;
+        String temperature;
+        String error;
+        String command;
+    } topics;
 
     String name;
     WiFiClient wifi;
@@ -42,7 +49,9 @@ private:
     RELAY_MODULE light;
 
     Time timer;
-    void on_read(float,float);
+    void on_sensor_read(float,float);
+    void on_command(std::string);
+    static void on_message( char *,  uint8_t *,unsigned int);
 
     static void humidity_too_low(float,float);
     static void humidity_too_high(float,float);

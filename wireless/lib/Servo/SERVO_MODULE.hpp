@@ -18,7 +18,7 @@ public:
     SERVO_MODULE(int);
     ~SERVO_MODULE();
 
-    void clear();
+    bool await();
     void set(int);
     void setup();
 };

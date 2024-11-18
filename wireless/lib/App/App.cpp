@@ -1,8 +1,13 @@
 #include <App.hpp>
+#include <sstream>
+App* App::instance;
 
 App::App(String name,periferals_info_t pinnes):name(name),sensor(pinnes.dht_pin,{40.0f,60.0f},{36.0f,39.0f}),servo(pinnes.servo_pin),fan(pinnes.fan_pin),light(pinnes.light_pin),client(wifi)
 {
     instance = this;
+    topics.humidity = name + "/humidity";
+    topics.temperature = name + "/temperature";
+    topics.error = name + "/error";
 }
 
 void App::setup(config_t config)
@@ -39,61 +44,103 @@ void App::setup(config_t config)
             delay(2000);
         }
     }
-
+    client.setCallback(on_message).subscribe(topics.command.c_str());
+    servo.set(90);
 }
 
 void App::tick()
 {
+    timer.tick();
     client.loop();
     sensor.tick();
+    if(timer.acc>5*60*1000){
+        servo.set(90-15);
+        while (!servo.await());//blocking
+        servo.set(90+15);
+        timer.reset();
+    }
 }
 
 App::~App()
 {
 }
 
-void App::on_read(float humidity, float temperature)
+void App::on_sensor_read(float humidity, float temperature)
 {
-    String topic = name + "/humidity";
     auto msg = std::to_string(humidity);
-    client.publish(topic.c_str(),msg.c_str());
+    client.publish(topics.humidity.c_str(),msg.c_str());
 
-    topic = name + "/temperature";
     msg = std::to_string(temperature);
-    client.publish(topic.c_str(),msg.c_str());
+    client.publish(topics.temperature.c_str(),msg.c_str());
+}
+
+void App::on_command(std::string command)
+{
+    std::stringstream ss(command);
+    std::string token;
+    ss>>token;
+    if(token=="servo"){
+        int angle;
+        ss>>angle;
+        servo.set(angle);
+    }
+    else if(token=="light"){
+        ss>>token;
+        if(token=="on"){
+            light.on();
+        }
+        else if(token=="off"){
+            light.off();
+        }
+    }
+    else if(token=="fan"){
+        ss>>token;
+        if(token=="on"){
+            fan.on();
+        }
+        else if(token=="off"){
+            fan.off();
+        }
+    }
+}
+
+void App::on_message(char * topic, uint8_t * msg, unsigned int size)
+{
+    if(!strcmp(topic,instance->topics.command.c_str())){
+        instance->on_command(std::string(String(msg,size).c_str()));
+    }
 }
 
 void App::humidity_too_low(float humidity,float temperature){
-    instance->on_read(humidity,temperature);
+    instance->on_sensor_read(humidity,temperature);
     Serial.println("humidity_too_low");
 }
 void App::humidity_too_high(float humidity,float temperature){
-    instance->on_read(humidity,temperature);
+    instance->on_sensor_read(humidity,temperature);
     Serial.println("humidity_too_high");
 }
 void App::humidity_in_range(float humidity,float temperature){
-    instance->on_read(humidity,temperature);
+    instance->on_sensor_read(humidity,temperature);
     Serial.println("humidity_in_range");
 }
 void App::temperature_too_low(float humidity,float temperature){
     instance->fan.off();
     instance->light.on();
-    instance->on_read(humidity,temperature);
+    instance->on_sensor_read(humidity,temperature);
     Serial.println("temperature_too_low");
 }
 void App::temperature_too_high(float humidity,float temperature){
     instance->light.off();
     instance->fan.on();
-    instance->on_read(humidity,temperature);
+    instance->on_sensor_read(humidity,temperature);
     Serial.println("temperature_too_high");
 }
 void App::temperature_in_range(float humidity,float temperature){
-    instance->on_read(humidity,temperature);
+    instance->on_sensor_read(humidity,temperature);
     Serial.println("temperature_in_range");
 }
 
 void App::sensor_error(String err)
 {
-    String topic = instance->name + "/error";
-    instance->client.publish(topic.c_str(),err.c_str());
+    instance->client.publish(instance->topics.error.c_str(),err.c_str());
 }

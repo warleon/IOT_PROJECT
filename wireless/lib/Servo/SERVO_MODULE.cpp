@@ -14,12 +14,13 @@ SERVO_MODULE::~SERVO_MODULE()
 {
 }
 
-void SERVO_MODULE::clear()
+bool SERVO_MODULE::await()
 {
     timer.tick();
-    if(timer.acc < msPerDegree * currChange)return;//ignore command while moving 
+    if(timer.acc < msPerDegree * currChange)return false;
     currChange = 0;
     timer.reset();
+    return true;
 }
 
 void SERVO_MODULE::set(int nangle)
