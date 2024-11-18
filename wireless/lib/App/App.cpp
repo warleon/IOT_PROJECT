@@ -68,24 +68,28 @@ void App::humidity_too_low(float humidity,float temperature){
     Serial.println("humidity_too_low");
 }
 void App::humidity_too_high(float humidity,float temperature){
-  instance->on_read(humidity,temperature);
-  Serial.println("humidity_too_high");
+    instance->on_read(humidity,temperature);
+    Serial.println("humidity_too_high");
 }
 void App::humidity_in_range(float humidity,float temperature){
-  instance->on_read(humidity,temperature);
-  Serial.println("humidity_in_range");
+    instance->on_read(humidity,temperature);
+    Serial.println("humidity_in_range");
 }
 void App::temperature_too_low(float humidity,float temperature){
-  instance->on_read(humidity,temperature);
-  Serial.println("temperature_too_low");
+    instance->fan.off();
+    instance->light.on();
+    instance->on_read(humidity,temperature);
+    Serial.println("temperature_too_low");
 }
 void App::temperature_too_high(float humidity,float temperature){
-  instance->on_read(humidity,temperature);
-  Serial.println("temperature_too_high");
+    instance->light.off();
+    instance->fan.on();
+    instance->on_read(humidity,temperature);
+    Serial.println("temperature_too_high");
 }
 void App::temperature_in_range(float humidity,float temperature){
-  instance->on_read(humidity,temperature);
-  Serial.println("temperature_in_range");
+    instance->on_read(humidity,temperature);
+    Serial.println("temperature_in_range");
 }
 
 void App::sensor_error(String err)
