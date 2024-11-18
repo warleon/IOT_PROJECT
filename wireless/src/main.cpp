@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include <DHT_MODULE.hpp>
+#include <RELAY_MODULE.hpp>
 
 DHT_MODULE DHT_sensor(32,{20.0f,80.0f},{0.0f,50.0f});
+
 
 void humidity_too_low(float,float);
 void humidity_too_high(float,float);
@@ -21,11 +23,13 @@ void setup() {
   DHT_sensor.on[DHT_sensor.TEMPERATURE_TOO_LOW] = temperature_too_low;
   DHT_sensor.on[DHT_sensor.TEMPERATURE_TOO_HIGH] = temperature_too_high;
   DHT_sensor.on[DHT_sensor.TEMPERATURE_IN_RANGE] = temperature_in_range;
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   DHT_sensor.tick();
+  delay(1000);
 }
 
 void humidity_too_low(float humidity,float temperature){
