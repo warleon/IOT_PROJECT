@@ -8,6 +8,7 @@ App::App(String name,periferals_info_t pinnes):name(name),sensor(pinnes.dht_pin,
     topics.humidity = name + "/humidity";
     topics.temperature = name + "/temperature";
     topics.error = name + "/error";
+    topics.command = name + "/command"
 }
 
 void App::setup(config_t config)
