@@ -8,7 +8,7 @@ void setup() {
   Serial.begin(9600);
   App::config_t config;
   config.SSID = "Warleon wifi";
-  config.password = "123345678";
+  config.password = "12345678";
   config.mqttServer = "192.168.229.226";
   config.mqttUser = "";
   config.mqttPassword ="";
