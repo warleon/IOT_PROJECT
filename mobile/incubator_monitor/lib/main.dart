@@ -33,14 +33,17 @@ class _MQTTPageState extends State<MQTTPage> {
   final MQTTClientHandler _mqttHandler = MQTTClientHandler();
   final TextEditingController _messageController = TextEditingController();
 
-
-  String broker = '192.168.229.226'; // Example public broker
+  String broker = '192.168.18.9'; //192.168.229.226'; // Example public broker
   final String pubTopic = 'Incubator/command';
-  final List<String> subTopics =['Incubator/humidity','Incubator/temperature','Incubator/error'];
+  final List<String> subTopics = [
+    'Incubator/humidity',
+    'Incubator/temperature',
+    'Incubator/error'
+  ];
 
-  String lastHumidity='No Data Available... Yet...';
-  String lastTemperature='No Data Available... Yet...';
-  String lastError='No Errors have been reported';
+  String lastHumidity = 'No Data Available... Yet...';
+  String lastTemperature = 'No Data Available... Yet...';
+  String lastError = 'No Errors have been reported';
 
   @override
   void initState() {
@@ -48,35 +51,35 @@ class _MQTTPageState extends State<MQTTPage> {
     _connectToBroker();
   }
 
-  void onMessage(String topic, String msg){
-      if(topic == subTopics[0]){
-        setState(() {
-          lastHumidity = msg;
-        });
-      }
-      else if(topic == subTopics[1]){
-        setState(() {
-          lastTemperature = msg;
-        });
-      }
-      else if(topic == subTopics[2]){
-        setState(() {
-          lastError = msg;
-        });
-      }
+  void onMessage(String topic, String msg) {
+    if (topic == subTopics[0]) {
+      setState(() {
+        lastHumidity = msg;
+      });
+    } else if (topic == subTopics[1]) {
+      setState(() {
+        lastTemperature = msg;
+      });
+    } else if (topic == subTopics[2]) {
+      setState(() {
+        lastError = msg;
+      });
+    }
   }
 
   Future<void> _connectToBroker() async {
     await _mqttHandler.connect(broker, 'flutter_client');
-    for(String topic in subTopics){
+    for (String topic in subTopics) {
       _mqttHandler.subscribe(topic);
     }
 
     // Listen for incoming messages
-    _mqttHandler.client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>> events) {
-      final MqttPublishMessage recMess = events[0].payload as MqttPublishMessage;
+    _mqttHandler.client.updates!
+        .listen((List<MqttReceivedMessage<MqttMessage?>> events) {
+      final MqttPublishMessage recMess =
+          events[0].payload as MqttPublishMessage;
       final String message =
-      MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       final String topic = events[0].topic;
 
       print('Received message: $message from topic: ${topic}>');
