@@ -33,7 +33,7 @@ class _MQTTPageState extends State<MQTTPage> {
   final MQTTClientHandler _mqttHandler = MQTTClientHandler();
   final TextEditingController _messageController = TextEditingController();
 
-  String broker = '192.168.18.9'; //192.168.229.226'; // Example public broker
+  String broker = '192.168.65.226';
   final String pubTopic = 'Incubator/command';
   final List<String> subTopics = [
     'Incubator/humidity',

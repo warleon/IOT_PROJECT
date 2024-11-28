@@ -9,7 +9,8 @@ void setup() {
   App::config_t config;
   config.SSID = "Warleon wifi";
   config.password = "12345678";
-  config.mqttServer = "192.168.229.226";
+  //config.mqttServer = "192.168.229.226";
+  config.mqttServer = "192.168.65.226";
   config.mqttUser = "";
   config.mqttPassword ="";
   config.mqttPort = 1883;
