@@ -29,7 +29,7 @@ class MQTTPageState extends State<MQTTPage> {
 
     // Conectar al broker
     await _mqttRepository.connect(
-      broker: '192.168.18.9',
+      broker: '192.168.65.226',
       clientIdentifier: 'flutter_client',
     );
 
